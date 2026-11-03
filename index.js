@@ -34,3 +34,27 @@ app.post("/komik", async (req, res) => {
     res.send(error);
   }
 });
+
+app.get("/komik", async (req, res) => {
+  try {
+    const komik = await db.Komik.findAll();
+    res.send(komik);
+  } catch (error) {
+    res.send(error);
+  }
+});
+
+app.put("/komik/:id", async (req, res) => {
+  const id = req.params.id;
+  const data = req.body;
+  try {
+    const komik = await db.Komik.findByPk(id);
+    if (!komik) {
+      return res.status(404).send({ error: "Komik tidak ditemukan" });
+    }
+    await komik.update(data);
+    res.send({ message: "Komik berhasil diupdate", komik });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
